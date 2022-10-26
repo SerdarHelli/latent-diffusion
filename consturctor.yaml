@@ -3,6 +3,7 @@ version: 0.1      # increment if you change the specs, for reproducibility!
 
 channels:
   - conda-forge
+  - pytorch
 specs:
   - python=3.8.5
   - pip=20.3
@@ -22,7 +23,7 @@ specs:
 
   # Add your dependencies below this line
   # -------------------------------------
-  - flask  # example
+
 
 # Pip dependencies are NOT recommended. If you do need them
 # uncomment the line below and edit `pip-dependencies.sh`.
@@ -31,3 +32,5 @@ specs:
 # do not edit below this line
 # ---------------------------
 installer_type: sh
+
+
