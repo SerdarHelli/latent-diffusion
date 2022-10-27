@@ -127,7 +127,7 @@ class SegmentationBase(Dataset):
          # output = np.eye(3)[categoricallabelmap]
         output=categoricallabelmap[:,:,0]
         output=np.int32(output)
-        output=np.eye(np.max(output)+1)[output]
+        output=np.eye(5)[output]
 
         return output
 

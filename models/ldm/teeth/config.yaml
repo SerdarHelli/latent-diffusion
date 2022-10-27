@@ -78,11 +78,11 @@ data:
     num_workers: 5
     wrap: False
     train:
-      target: ldm.data.flickr.TeethSegTrain  #  PUT YOUR DATASET 
+      target: ldm.data.teethseg.TeethSegTrain  #  PUT YOUR DATASET 
       params:
         size: 256
     validation:
-      target: ldm.data.flickr.TeethSegEval  #  PUT YOUR DATASET 
+      target: ldm.data.teethseg.TeethSegEval  #  PUT YOUR DATASET 
       params:
         size: 256
 
