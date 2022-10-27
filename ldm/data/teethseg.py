@@ -176,3 +176,7 @@ class TeethSegTrain(SegmentationBase):
 class TeethSegEval(SegmentationBase):
     def __init__(self, size=None, random_crop=False, interpolation="bicubic"):
         super().__init__(file_path="data/Tufts_Raw_Val",img_dim=size,data_flip=True,with_abnormality=True)
+
+class TeethSegTest(SegmentationBase):
+    def __init__(self, size=None, random_crop=False, interpolation="bicubic"):
+        super().__init__(file_path="data/Tufts_Raw_Test",img_dim=size,data_flip=True,with_abnormality=True)
