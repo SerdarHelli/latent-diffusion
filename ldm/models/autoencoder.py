@@ -118,7 +118,7 @@ class VQModel(pl.LightningModule):
         quant, diff, (_,_,ind) = self.encode(input)
         dec = self.decode(quant)
 
-        return dec, diff,ind
+        return dec, diff
 
     def get_input(self, batch, k):
         x = batch[k]
@@ -142,7 +142,7 @@ class VQModel(pl.LightningModule):
         # https://github.com/pytorch/pytorch/issues/37142
         # try not to fool the heuristics
         x = self.get_input(batch, self.image_key)
-        xrec, qloss, ind = self.forward(x)
+        xrec, qloss = self.forward(x)
 
         if optimizer_idx == 0:
             # autoencode
@@ -168,7 +168,7 @@ class VQModel(pl.LightningModule):
 
     def _validation_step(self, batch, batch_idx, suffix=""):
         x = self.get_input(batch, self.image_key)
-        xrec, qloss, ind = self.forward(x)
+        xrec, qloss = self.forward(x)
         aeloss, log_dict_ae = self.loss(qloss, x, xrec, 0,
                                         self.global_step,
                                         last_layer=self.get_last_layer(),
