@@ -8,7 +8,7 @@ python -m pip install bottle
 
 python -m pip install  albumentations==0.4.3
 python -m pip install  opencv-python==4.1.2.30
-python -m pip install pudb==2019.2
+python -m pip install  pudb==2019.2
 python -m pip install  imageio==2.9.0
 python -m pip install  imageio-ffmpeg==0.4.2
 python -m pip install  pytorch-lightning==1.4.2
@@ -24,4 +24,5 @@ python -m pip install  torchvision==0.8.1
 python -m pip install  natsort==8.2.0
 python -m pip install  shutils==0.1.0
 python -m pip install  torchmetrics==0.6.0
-python -m pip install  kornia==0.6.8
+python -m pip install  pytorch==1.7.0
+python -m pip install  kornia==0.5.0
