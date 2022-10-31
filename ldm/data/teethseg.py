@@ -88,7 +88,7 @@ class SegmentationBase(Dataset):
         self.dirs_label_teeth=natsorted(os.listdir(self.path_label_teeth))
  
     def __len__(self):
-        return len(self.dirs_label_teeth)*2
+        return len(self.dirs_label_teeth)
 
     def read_label(self,path,size):
         
@@ -154,9 +154,7 @@ class SegmentationBase(Dataset):
         return segmentationmap
         
     def __getitem__(self, i):
-        i_real=i
-        if i>len(self.dirs_label_teeth):
-          i=i-len(self.dirs_label_teeth)
+
         files_names=self.dirs_label_teeth
         path_img=os.path.join(self.path_img,files_names[i].upper())
         path_label_teeth=os.path.join(self.path_label_teeth,files_names[i])
@@ -167,20 +165,12 @@ class SegmentationBase(Dataset):
         mandibular=self.read_label(path_label_mandibular, self.img_dim)
         abnormal=self.read_label(path_abnormal, self.img_dim)
         categorical_map=self.make_categoricalonehotlabelmap(mandibular, teeth, abnormal)
-        if i_real>len(self.dirs_label_teeth):
-            example = { "image": np.fliplr(image),
-              "segmentation": np.fliplr(categorical_map),
-              "relative_file_path_": files_names[i].upper(),
-              "file_path_": path_img,
-              "segmentation_path" : path_label_teeth
-                    }
-        else:
-            example = { "image": image,
-                        "segmentation": categorical_map,
-                        "relative_file_path_": files_names[i].upper(),
-                        "file_path_": path_img,
-                        "segmentation_path" : path_label_teeth
-                              }
+        example = { "image": image,
+                    "segmentation": categorical_map,
+                    "relative_file_path_": files_names[i].upper(),
+                    "file_path_": path_img,
+                    "segmentation_path" : path_label_teeth
+                          }
         return example
 
 
