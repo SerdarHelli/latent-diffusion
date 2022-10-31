@@ -30,9 +30,10 @@ def convert_tobgr(img):
 
 class SegmentationBase(Dataset):
     def __init__(self,
-                 file_path,img_dim=256,data_flip=True,with_abnormality=True
+                 file_path,img_dim=256,data_flip=True,with_abnormality=True,apply_flip=True
                  ):
         self.data_path = file_path
+        self.apply_flip=apply_flip
         self.segm_zippath=os.path.join(file_path, "Segmentation.zip")
         self.expert_zippath=os.path.join(file_path, "Expert.zip")
         self.radio_zippath=os.path.join(file_path, "Radiographs.zip")
@@ -87,7 +88,7 @@ class SegmentationBase(Dataset):
         self.dirs_label_teeth=natsorted(os.listdir(self.path_label_teeth))
  
     def __len__(self):
-        return len(self.dirs_label_teeth)
+        return len(self.dirs_label_teeth)*2
 
     def read_label(self,path,size):
         
@@ -108,7 +109,10 @@ class SegmentationBase(Dataset):
       return img
     
     def len(self):
-        return len(self.dirs_label_teeth)*2
+        if self.apply_flip:
+           return len(self.dirs_label_teeth)*2
+        else:
+           return len(self.dirs_label_teeth)
     
     def make_categoricalonehotlabelmap(self,mandibular,teeth,abnormal):
 
@@ -150,6 +154,8 @@ class SegmentationBase(Dataset):
         return segmentationmap
         
     def __getitem__(self, i):
+        if i>len(self.dirs_label_teeth):
+          i=i-len(self.dirs_label_teeth)
         files_names=self.dirs_label_teeth
         path_img=os.path.join(self.path_img,files_names[i].upper())
         path_label_teeth=os.path.join(self.path_label_teeth,files_names[i])
@@ -179,12 +185,12 @@ class SegmentationBase(Dataset):
 
 class TeethSegTrain(SegmentationBase):
     def __init__(self, size=None, random_crop=False, interpolation="bicubic"):
-        super().__init__(file_path="data/Tufts_Raw_Train",img_dim=size,data_flip=True,with_abnormality=True)
+        super().__init__(file_path="data/Tufts_Raw_Train",img_dim=size,data_flip=True,with_abnormality=True,apply_flip=True)
         
 class TeethSegEval(SegmentationBase):
     def __init__(self, size=None, random_crop=False, interpolation="bicubic"):
-        super().__init__(file_path="data/Tufts_Raw_Val",img_dim=size,data_flip=True,with_abnormality=True)
+        super().__init__(file_path="data/Tufts_Raw_Val",img_dim=size,data_flip=True,with_abnormality=True,apply_flip=True)
 
 class TeethSegTest(SegmentationBase):
     def __init__(self, size=None, random_crop=False, interpolation="bicubic"):
-        super().__init__(file_path="data/Tufts_Raw_Test",img_dim=size,data_flip=True,with_abnormality=True)
+        super().__init__(file_path="data/Tufts_Raw_Test",img_dim=size,data_flip=True,with_abnormality=True,apply_flip=False)
