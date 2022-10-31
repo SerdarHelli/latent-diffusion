@@ -154,6 +154,7 @@ class SegmentationBase(Dataset):
         return segmentationmap
         
     def __getitem__(self, i):
+        i_real=i
         if i>len(self.dirs_label_teeth):
           i=i-len(self.dirs_label_teeth)
         files_names=self.dirs_label_teeth
@@ -166,7 +167,7 @@ class SegmentationBase(Dataset):
         mandibular=self.read_label(path_label_mandibular, self.img_dim)
         abnormal=self.read_label(path_abnormal, self.img_dim)
         categorical_map=self.make_categoricalonehotlabelmap(mandibular, teeth, abnormal)
-        if i>len(self.dirs_label_teeth):
+        if i_real>len(self.dirs_label_teeth):
             example = { "image": np.fliplr(image),
               "segmentation": np.fliplr(categorical_map),
               "relative_file_path_": files_names[i].upper(),
