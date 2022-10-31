@@ -108,7 +108,7 @@ class SegmentationBase(Dataset):
       return img
     
     def len(self):
-        return len(self.dirs_label_teeth)
+        return len(self.dirs_label_teeth)*2
     
     def make_categoricalonehotlabelmap(self,mandibular,teeth,abnormal):
 
@@ -160,12 +160,20 @@ class SegmentationBase(Dataset):
         mandibular=self.read_label(path_label_mandibular, self.img_dim)
         abnormal=self.read_label(path_abnormal, self.img_dim)
         categorical_map=self.make_categoricalonehotlabelmap(mandibular, teeth, abnormal)
-        example = { "image": image,
-                    "segmentation": categorical_map,
-                     "relative_file_path_": files_names[i].upper(),
-                    "file_path_": path_img,
-                    "segmentation_path" : path_label_teeth
-                          }
+        if i>len(self.dirs_label_teeth):
+            example = { "image": np.fliplr(image),
+              "segmentation": np.fliplr(categorical_map),
+              "relative_file_path_": files_names[i].upper(),
+              "file_path_": path_img,
+              "segmentation_path" : path_label_teeth
+                    }
+        else:
+            example = { "image": image,
+                        "segmentation": categorical_map,
+                        "relative_file_path_": files_names[i].upper(),
+                        "file_path_": path_img,
+                        "segmentation_path" : path_label_teeth
+                              }
         return example
 
 
