@@ -85,8 +85,11 @@ class SegmentationBase(Dataset):
         if not os.path.isdir(self.path_img):
           shutil.unpack_archive(self.radio_zippath,file_path)
         
+          
         self.dirs_label_teeth=natsorted(os.listdir(self.path_label_teeth))
- 
+        if self.apply_flip:
+           self.dirs_label_teeth=self.dirs_label_teeth+self.dirs_label_teeth
+           
     def __len__(self):
         return len(self.dirs_label_teeth)
 
@@ -98,6 +101,9 @@ class SegmentationBase(Dataset):
         label=np.reshape(label,(size,size,1)) 
         return label
     
+
+
+
     def read_img(self,path,size):
 
       img = cv2.imread(path)
@@ -108,11 +114,7 @@ class SegmentationBase(Dataset):
       img=np.float32((img - 127.5) / 127.5 )
       return img
     
-    def len(self):
-        if self.apply_flip:
-           return len(self.dirs_label_teeth)*2
-        else:
-           return len(self.dirs_label_teeth)
+
     
     def make_categoricalonehotlabelmap(self,mandibular,teeth,abnormal):
 
@@ -135,24 +137,7 @@ class SegmentationBase(Dataset):
 
         return output
 
-    def apply_flip(self,image,segmentationmap,label,categoricallabelmap):
 
-        flipped_image=np.fliplr(image)
-        flipped_segmentationmap=np.fliplr(segmentationmap)
-        flipped_label=np.fliplr(label)
-        flipped_categoricallabelmap=np.fliplr(categoricallabelmap)
-        return flipped_image,flipped_segmentationmap,flipped_label,flipped_categoricallabelmap
-
-  
-    def make_segmentationmap(self,categorical_map):
-        segmentationmap=np.zeros((self.img_dim,self.img_dim,3))
-        segmentationmap[:,:,0]=categorical_map[:,:,3]
-        if self.with_abnormality:
-          segmentationmap[:,:,1]=categorical_map[:,:,4]          
-        segmentationmap[:,:,2]=categorical_map[:,:,2]
-        segmentationmap=np.float32((segmentationmap - 0.5) /0.5 )
-        return segmentationmap
-        
     def __getitem__(self, i):
 
         files_names=self.dirs_label_teeth
@@ -171,6 +156,10 @@ class SegmentationBase(Dataset):
                     "file_path_": path_img,
                     "segmentation_path" : path_label_teeth
                           }
+        if i>len(self.dirs_label_teeth):
+            example["image"] = np.fliplr(image)
+            example["segmentation"]=np.fliplr(categorical_map)
+       
         return example
 
 
